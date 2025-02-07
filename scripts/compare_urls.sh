@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Rutas de los archivos CSV
-SOURCE_FILE="/app/storage/app/data_dumps/source_publisher-url.csv"
-CATALOG_FILE="/app/storage/app/data_dumps/catalog_publisher-url.csv"
-OUTPUT_FILE="/app/storage/app/data_dumps/non_duplicates.csv"
+# Rutas de los archivos CSV dentro del contenedor de Sail
+SOURCE_FILE="/var/www/html/storage/app/data_dumps/source_publisher-url.csv"
+CATALOG_FILE="/var/www/html/storage/app/data_dumps/catalog_publisher-url.csv"
+OUTPUT_FILE="/var/www/html/storage/app/data_dumps/non_duplicates.csv"
 
 # Verificar que los archivos existen
 if [[ ! -f "$SOURCE_FILE" ]] || [[ ! -f "$CATALOG_FILE" ]]; then

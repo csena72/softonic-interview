@@ -59,7 +59,7 @@ Then generate the application key:
 ```
 
 **8. Access the application:**
-The application should be available at (http://localhost/admin).
+The application should be available at (http://localhost).
 
 
 ## Docker Commands
@@ -69,24 +69,24 @@ To start the application (if not already running):
 ./vendor/bin/sail up -d
 ```
 
-**2.View running containers:**
-To see which containers are running:
-```sh
-./vendor/bin/sail ps
-```
-**3. View logs:**
-To see the logs for your containers:
-```sh
-./vendor/bin/sail logs
-```
-You can view the logs for a specific service by specifying its name, for example:
-```sh
-./vendor/bin/sail logs <service-name>
-```
-**4. run tests:**
+**2.View EP:**
 
+(http://localhost/api/apps/21824)
+
+**3. Run command:**
 ```sh
-./vendor/bin/sail artisan test
+./vendor/bin/sail artisan app:info 21824
+```
+**4. Run test:**
+```sh
+./vendor/bin/sail artisan test --filter AppInfoControllerTest
+
+./vendor/bin/sail artisan test --filter AppInfoServiceTest
+```
+
+**5. Shutdown app:**
+```sh
+./vendor/bin/sail down
 ```
 
 
