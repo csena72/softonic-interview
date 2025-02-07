@@ -2,9 +2,10 @@
 /node_modules
 /public/build
 /public/hot
-/public/storage
-/storage/*.key
-/storage/pail
+storage/
+!storage/app/
+!storage/app/app_dumps/
+!storage/app/source-api-outputs/
 /vendor
 .env
 .env.backup
