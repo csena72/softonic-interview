@@ -1,66 +1,74 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Exercise 1: Laravel Api Endpoint & Laravel Artisan Command
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+We provide information about programs and apps to several services. The core information about apps can be found in the "Apps API" and the information about the authors can be found in the "Developers API". 
 
-## About Laravel
+Each API returns the information with a specific format, that can be found in the source-api-outputs directory.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Write an API service with a `http` endpoint that given an app **id** returns its information with the [output format](#output-format):
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Write an Artisan command that given an app **id** returns the same information as the `http` endpoint.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+#### Output format
 
-## Learning Laravel
+```json
+{
+  "id": "21824",
+  "author_info": {
+    "name": "AresGalaxy",
+    "url": "https://aresgalaxy.io/"
+  },
+  "title": "Ares",
+  "version": "2.4.0",
+  "url": "http://ares.en.softonic.com",
+  "short_description": "Fast and unlimited P2P file sharing",
+  "license": "Free (GPL)",
+  "thumbnail": "https://screenshots.en.sftcdn.net/en/scrn/21000/21824/ares-14-100x100.png",
+  "rating": 8,
+  "total_downloads": "4741260",
+  "compatible": "Windows 2000|Windows XP|Windows Vista|Windows 7|Windows 8"
+}
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Considerations:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+* You must use Laravel as the framework and PHP as the programming language. Preferably using functionalities from PHP 8.3 or higher. 
+* Currently, we are using the data from 2 APIs: "Apps API" and "Developers API". The output format is JSON. An example output is in the source-api-outputs directory. 
+    * For the purpose of this exercise, you can use the files in the source-api-outputs directory as the source of the data.
+* We plan to add more information from a third API soon, that will provide the information as XML (you don't need to implement this, just be prepared for it).
+* The focus here should be on design, more than implementation or performance. We are less interested in seeing that this works than in seeing how you approach the problem.
+* Please provide at least some unit tests (it is not required to write them for every class). Functional/Feature tests are also a plus.
+* Please provide a short summary as SUMMARY_EX1.md detailing anything you think is relevant, for example:
+    * Installation steps
+    * How to run your code / tests
+    * What would you do to improve the performance/scalability?
+    * What would you have done differently if you had had more time
+    * Etc.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Exercise 2: Laravel Artisan Command Detect Duplicates
 
-## Laravel Sponsors
+**We want to detect which programs are not in our catalog to perform a more precise import without creating duplicates**. To achieve this, we have a duplicate detection system, one part of which is responsible for comparing the `publisher_url` from the source with the `publisher_url` we have in our catalog. If the `publisher_url` matches at least **85%**, the programs are considered duplicates.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+The issue we are facing is that, due to the large volume of data, the detection that was previously done at database level is no longer viable because of its latency. We need to develop a new detection mechanism.
 
-### Premium Partners
+For this, the `publisher_url` data from the source and the catalog has been exported into files. The source file contains two columns: the `id_store` of the app and the `publisher_url`. The catalog file contains only one column with all the `publisher_url` values.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+We need a **Laravel Artisan command** that, given these two files, outputs a file containing the `id_store` values of the programs that does **NOT** surpass the **85%** similarity threshold.
 
-## Contributing
+### Considerations:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+* You must create a new Artisan command and add to the Laravel project in the previous exercise.
+* A script must be created in an alternative language (Python, Ruby, BASH, etc.) to compare the files and generate the output file.
+* This script must be included within a Laravel Artisan command.
+* The focus here should be to ensure flexibility in using programming languages other than PHP, while also maintaining seamless integration of that technology within the Laravel framework.
+* The **performance** of the Artisan command will be highly valued, as the goal of this command is to achieve high performance and reduce latency. The faster it executes and the fewer resources it consumes, the better.
+* The **85%** similarity between publisher_url is just an approximation, and you can use any algorithm/tool to calculate the similarity.
+* Please provide at least one unit test.
+* Please provide a short summary as SUMMARY_EX2.md detailing anything you think is relevant, for example:
+    * How to run your code / tests
+    * Why did you choose the language you used for the script, and not another?
+    * What would you do to improve the performance/scalability if you would not have any constraints?
+    * What would you have done differently if you had had more time
 
-## Code of Conduct
+* * *
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Please send us a git bundle with your code. You can create a git bundle using `git bundle create your_project_name.bundle --all`
